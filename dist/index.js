@@ -29972,6 +29972,8 @@ function run() {
             const branchName = ref.replace("refs/heads/", "");
             const owner = repository.owner.login;
             const repo = repository.name;
+            console.log(`owner = ${owner}`);
+            console.log(`repo = ${repo}`);
             const commit = yield octokit.rest.repos.getCommit({
                 owner,
                 repo,
