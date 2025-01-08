@@ -1,4 +1,4 @@
-name: 'MergeMate'
+name: 'Merge-Mate'
 description: 'Automatically creates a PR when a new branch is pushed.'
 
 runs:
