@@ -29960,7 +29960,7 @@ const core = __importStar(__nccwpck_require__(9492));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const githubToken = core.getInput("github-token", { required: true });
+            // const githubToken = core.getInput("github-token", { required: true });
             const octokit = (0, github_1.getOctokit)(process.env.GITHUB_TOKEN); //githubToken);
             const { repository, ref } = github_1.context.payload;
             if (!repository || !ref) {
