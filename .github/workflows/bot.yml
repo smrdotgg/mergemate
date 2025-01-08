@@ -2,7 +2,7 @@ name: MergeMate PR Bot
 on:
  push:
    branches-ignore:
-     - "main"
+      "main"
 jobs:
  create-pr:
    runs-on: ubuntu-latest
