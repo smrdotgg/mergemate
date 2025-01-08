@@ -29963,14 +29963,25 @@ function run() {
             const githubToken = core.getInput("github-token", { required: true });
             console.log(`github token length = ${githubToken.length}`);
             const octokit = (0, github_1.getOctokit)(githubToken);
-            const { repository, ref } = github_1.context.payload;
-            if (!repository || !ref) {
-                core.setFailed("Repository or ref not found in context.");
+            const { repository, ref, sha } = github_1.context.payload;
+            if (!repository || !ref || !sha) {
+                core.setFailed("Repository, ref, or sha not found in context.");
                 return;
             }
             const branchName = ref.replace("refs/heads/", "");
             const owner = repository.owner.login;
             const repo = repository.name;
+            // Get the latest commit message
+            const commit = yield octokit.rest.repos.getCommit({
+                owner,
+                repo,
+                ref: sha,
+            });
+            const commitMessage = commit.data.commit.message;
+            // Check if the commit message contains #pr
+            if (!commitMessage.toLowerCase().includes("#pr")) {
+                core.info("No #pr found in the latest commit message. Skipping PR creation.");
+            }
             // Create a pull request
             const pr = yield octokit.rest.pulls.create({
                 owner,
