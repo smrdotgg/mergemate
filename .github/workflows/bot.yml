@@ -6,11 +6,11 @@ on:
 jobs:
  create-pr:
    runs-on: ubuntu-latest
-   permissions: write-all
-     # pulls: write
-     # contents: read
-     # pull-requests: write
-     # contents: write
+   permissions:
+     pulls: write
+     contents: read
+     pull-requests: write
+     contents: write
    steps:
      - name: Checkout repository
        uses: actions/checkout@v3

@@ -5,6 +5,7 @@ import * as core from "@actions/core";
 async function run() {
   try {
     const githubToken = core.getInput("github-token", { required: true });
+    console.log(`github token length = ${githubToken.length}`);
     const octokit = getOctokit(githubToken);
 
     const { repository, ref } = context.payload;

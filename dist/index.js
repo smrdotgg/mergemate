@@ -29961,6 +29961,7 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const githubToken = core.getInput("github-token", { required: true });
+            console.log(`github token length = ${githubToken.length}`);
             const octokit = (0, github_1.getOctokit)(githubToken);
             const { repository, ref } = github_1.context.payload;
             if (!repository || !ref) {
