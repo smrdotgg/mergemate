@@ -21,10 +21,7 @@ async function run() {
     const commit = await octokit.rest.repos.getCommit({
       owner,
       repo,
-
       ref,
-      // owner,
-      // repo,
     });
     const commitMessage = commit.data.commit.message;
     console.log(`Commit message = [${commitMessage}]`);
@@ -34,7 +31,9 @@ async function run() {
       core.info(
         "No #pr found in the latest commit message. Skipping PR creation.",
       );
+      return;
     }
+
     // Create a pull request
     const pr = await octokit.rest.pulls.create({
       owner,

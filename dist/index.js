@@ -29975,14 +29975,13 @@ function run() {
                 owner,
                 repo,
                 ref,
-                // owner,
-                // repo,
             });
             const commitMessage = commit.data.commit.message;
             console.log(`Commit message = [${commitMessage}]`);
             // Check if the commit message contains #pr
             if (!commitMessage.toLowerCase().includes("#pr")) {
                 core.info("No #pr found in the latest commit message. Skipping PR creation.");
+                return;
             }
             // Create a pull request
             const pr = yield octokit.rest.pulls.create({
