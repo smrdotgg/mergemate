@@ -12,8 +12,16 @@ jobs:
    steps:
      - name: Checkout repository
        uses: actions/checkout@v3
-     - uses: oven-sh/setup-bun@v2
+
+     - name: Set up Node.js
+       uses: actions/setup-node@v3
+       with:
+         node-version: 16
+     - name: Install dependencies
+       run: npm install
+     - name: Compile TypeScript
+       run: npx tsc
      - name: Run bot
        env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-       run: bun i && bun src/bot.ts
+       run: node dist/bot.js
