@@ -3,7 +3,7 @@ description: 'Automatically creates a PR when a new branch is pushed.'
 
 runs:
   using: 'node16'
-  main: 'dist/bot.js'
+  main: 'dist/index.js'
 inputs:
   github-token:
     description: 'GitHub token for authentication.'

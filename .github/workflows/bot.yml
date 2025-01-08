@@ -25,5 +25,6 @@ jobs:
        run: npx tsc
      - name: Run bot
        env:
-         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-       run: node dist/bot.js
+         # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         GITHUB_TOKEN: ${{ secrets.MM_GITHUB_TOKEN }}
+       run: node dist/index.js
