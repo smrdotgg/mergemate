@@ -30,7 +30,7 @@ export async function getPullRequestTemplate(octokit: Octokit, owner: string, re
                 repo,
                 path: template.path,
               });
-              concatenatedBody += `[[[ ${template.name} ]]]\n\n${Buffer.from(fileContent.content, 'base64').toString('utf-8')}\n\n`;
+              concatenatedBody += `[[[ ${template.name} ]]]\n\n${Buffer.from((fileContent as any).content, 'base64').toString('utf-8')}\n\n`;
             }
           }
           if (concatenatedBody) {
@@ -58,7 +58,7 @@ export async function getPullRequestTemplate(octokit: Octokit, owner: string, re
               repo,
               path: templateFile.path,
             });
-            return Buffer.from(fileContent.content, 'base64').toString('utf-8');
+            return Buffer.from((fileContent as any).content, 'base64').toString('utf-8');
 
           }
         }

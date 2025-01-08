@@ -29957,6 +29957,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const github_1 = __nccwpck_require__(4004);
 const core = __importStar(__nccwpck_require__(9492));
+const get_pr_template_1 = __nccwpck_require__(7097);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -29983,6 +29984,8 @@ function run() {
                 core.info("No #pr found in the latest commit message. Skipping PR creation.");
                 return;
             }
+            // Get the pull request template
+            const prBody = yield (0, get_pr_template_1.getPullRequestTemplate)(octokit, owner, repo);
             // Create a pull request
             const pr = yield octokit.rest.pulls.create({
                 owner,
@@ -29990,7 +29993,7 @@ function run() {
                 title: `Merge ${branchName} into main`,
                 head: branchName,
                 base: "main",
-                body: "Automatically created PR by GitHub bot.",
+                body: prBody,
             });
             core.info(`Created PR #${pr.data.number}: ${pr.data.html_url}`);
         }
@@ -30005,66 +30008,87 @@ function run() {
     });
 }
 run();
-//
-// make it so this only creates the PR if #pr is present in the latest commit
-// import { Octokit } from "@octokit/rest";
-// import { context, getOctokit } from "@actions/github";
-// import * as core from "@actions/core";
-//
-// async function run() {
-//   try {
-//     const githubToken = core.getInput("github-token", { required: true });
-//     console.log(`github token length = ${githubToken.length}`);
-//     const octokit = getOctokit(githubToken);
-//
-//     const { repository, ref, sha } = context.payload;
-//
-//     if (!repository || !ref || !sha) {
-//       core.setFailed("Repository, ref, or sha not found in context.");
-//       return;
-//     }
-//
-//     const branchName = ref.replace("refs/heads/", "");
-//     const owner = repository.owner.login;
-//     const repo = repository.name;
-//
-//     // Get the latest commit message
-//     const commit = await octokit.rest.repos.getCommit({
-//       owner,
-//       repo,
-//       ref: sha,
-//     });
-//
-//     const commitMessage = commit.data.commit.message;
-//
-//     // Check if the commit message contains #pr
-//     if (!commitMessage.toLowerCase().includes("#pr")) {
-//       core.info(
-//         "No #pr found in the latest commit message. Skipping PR creation.",
-//       );
-//     }
-//
-//     // Create a pull request
-//     const pr = await octokit.rest.pulls.create({
-//       owner,
-//       repo,
-//       title: `Merge ${branchName} into main`,
-//       head: branchName,
-//       base: "main",
-//       body: "Automatically created PR by GitHub bot.",
-//     });
-//
-//     core.info(`Created PR #${pr.data.number}: ${pr.data.html_url}`);
-//   } catch (error) {
-//     if (error instanceof Error) {
-//       core.setFailed(`Error: ${error.message}`);
-//     } else {
-//       core.setFailed("An unknown error occurred");
-//     }
-//   }
-// }
-//
-// run();
+
+
+/***/ }),
+
+/***/ 7097:
+/***/ (function(__unused_webpack_module, exports) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getPullRequestTemplate = getPullRequestTemplate;
+function getPullRequestTemplate(octokit, owner, repo) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const pathsToCheck = [
+            "pull_request_template.md",
+            ".github/pull_request_template.md",
+            ".github/pull_request_template/"
+        ];
+        for (const path of pathsToCheck) {
+            try {
+                if (path.endsWith("/")) {
+                    // Check for multiple templates in the directory
+                    const { data: templates } = yield octokit.rest.repos.getContent({
+                        owner,
+                        repo,
+                        path,
+                    });
+                    if (Array.isArray(templates)) {
+                        let concatenatedBody = "";
+                        for (const template of templates) {
+                            if (template.type === "file" && template.name.toLowerCase().endsWith(".md")) {
+                                const { data: fileContent } = yield octokit.rest.repos.getContent({
+                                    owner,
+                                    repo,
+                                    path: template.path,
+                                });
+                                concatenatedBody += `[[[ ${template.name} ]]]\n\n${Buffer.from(fileContent.content, 'base64').toString('utf-8')}\n\n`;
+                            }
+                        }
+                        if (concatenatedBody) {
+                            return concatenatedBody;
+                        }
+                    }
+                }
+                else {
+                    // Check for a single template file
+                    const { data: directoryContent } = yield octokit.rest.repos.getContent({
+                        owner,
+                        repo,
+                        path: path.split("/").slice(0, -1).join("/") || ".", // Get the directory path
+                    });
+                    if (Array.isArray(directoryContent)) {
+                        const templateFile = directoryContent.find((file) => file.type === "file" && file.name.toLowerCase() === "pull_request_template.md");
+                        if (templateFile) {
+                            const { data: fileContent } = yield octokit.rest.repos.getContent({
+                                owner,
+                                repo,
+                                path: templateFile.path,
+                            });
+                            return Buffer.from(fileContent.content, 'base64').toString('utf-8');
+                        }
+                    }
+                }
+            }
+            catch (error) {
+                // Template not found in this path, continue to the next one
+                continue;
+            }
+        }
+        return "could not find the pull request template";
+    });
+}
 
 
 /***/ }),
