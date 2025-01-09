@@ -29,6 +29,7 @@ function checkFileContents(
   token: string,
   path: string,
 ) {
+  console.log(`fetchgin :::  https://api.github.com/repos/${username}/${repo}/contents${path}`)
   return fetch(
     `https://api.github.com/repos/${username}/${repo}/contents${path}`,
     {

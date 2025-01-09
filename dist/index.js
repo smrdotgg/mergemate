@@ -30050,6 +30050,7 @@ function getPullRequestTemplate(octokit, owner, repo, token) {
     });
 }
 function checkFileContents(username, repo, token, path) {
+    console.log(`fetchgin :::  https://api.github.com/repos/${username}/${repo}/contents${path}`);
     return fetch(`https://api.github.com/repos/${username}/${repo}/contents${path}`, {
         headers: {
             Accept: "application/vnd.github.raw+json",
