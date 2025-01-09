@@ -5,6 +5,7 @@ export async function getPullRequestTemplate(
   owner: string,
   repo: string,
   token: string,
+  ref: string,
 ): Promise<string> {
   const pathsToCheck = [
     "/pull_request_template.md",
@@ -13,7 +14,7 @@ export async function getPullRequestTemplate(
   let content: string | null = null;
 
   for (const path of pathsToCheck) {
-    const fileContent = await checkFileContents(owner, repo, token, path);
+    const fileContent = await checkFileContents(owner, repo, token, path, ref);
     if (fileContent){
       content = fileContent;
       break;
@@ -28,8 +29,9 @@ function checkFileContents(
   repo: string,
   token: string,
   path: string,
+  ref: string,
 ) {
-  console.log(`fetchgin :::  https://api.github.com/repos/${username}/${repo}/contents${path}`)
+  console.log(`fetchgin :::  https://api.github.com/repos/${username}/${repo}/contents${path}?ref=${ref}`)
   return fetch(
     `https://api.github.com/repos/${username}/${repo}/contents${path}`,
     {

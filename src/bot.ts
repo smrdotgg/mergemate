@@ -22,6 +22,7 @@ async function run() {
     const repo = repository.name;
     console.log(`owner = ${owner}`)
     console.log(`repo = ${repo}`)
+    console.log(`ref = ${ref}`)
 
     const commit = await octokit.rest.repos.getCommit({
       owner,
@@ -43,7 +44,7 @@ async function run() {
     }
 
     // Get the pull request template
-    const prBody = await getPullRequestTemplate(octokit as any, owner, repo, githubToken);
+    const prBody = await getPullRequestTemplate(octokit as any, owner, repo, githubToken, ref);
 
     // Create a pull request
     const pr = await octokit.rest.pulls.create({

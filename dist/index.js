@@ -29974,6 +29974,7 @@ function run() {
             const repo = repository.name;
             console.log(`owner = ${owner}`);
             console.log(`repo = ${repo}`);
+            console.log(`ref = ${ref}`);
             const commit = yield octokit.rest.repos.getCommit({
                 owner,
                 repo,
@@ -29987,7 +29988,7 @@ function run() {
                 return;
             }
             // Get the pull request template
-            const prBody = yield (0, get_pr_template_1.getPullRequestTemplate)(octokit, owner, repo, githubToken);
+            const prBody = yield (0, get_pr_template_1.getPullRequestTemplate)(octokit, owner, repo, githubToken, ref);
             // Create a pull request
             const pr = yield octokit.rest.pulls.create({
                 owner,
@@ -30030,7 +30031,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getPullRequestTemplate = getPullRequestTemplate;
-function getPullRequestTemplate(octokit, owner, repo, token) {
+function getPullRequestTemplate(octokit, owner, repo, token, ref) {
     return __awaiter(this, void 0, void 0, function* () {
         const pathsToCheck = [
             "/pull_request_template.md",
@@ -30038,7 +30039,7 @@ function getPullRequestTemplate(octokit, owner, repo, token) {
         ];
         let content = null;
         for (const path of pathsToCheck) {
-            const fileContent = yield checkFileContents(owner, repo, token, path);
+            const fileContent = yield checkFileContents(owner, repo, token, path, ref);
             if (fileContent) {
                 content = fileContent;
                 break;
@@ -30049,8 +30050,8 @@ function getPullRequestTemplate(octokit, owner, repo, token) {
         return "could not find the pull request template";
     });
 }
-function checkFileContents(username, repo, token, path) {
-    console.log(`fetchgin :::  https://api.github.com/repos/${username}/${repo}/contents${path}`);
+function checkFileContents(username, repo, token, path, ref) {
+    console.log(`fetchgin :::  https://api.github.com/repos/${username}/${repo}/contents${path}?ref=${ref}`);
     return fetch(`https://api.github.com/repos/${username}/${repo}/contents${path}`, {
         headers: {
             Accept: "application/vnd.github.raw+json",
