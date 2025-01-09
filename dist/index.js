@@ -30052,7 +30052,7 @@ function getPullRequestTemplate(octokit, owner, repo, token, ref) {
 }
 function checkFileContents(username, repo, token, path, ref) {
     console.log(`fetchgin :::  https://api.github.com/repos/${username}/${repo}/contents${path}?ref=${ref}`);
-    return fetch(`https://api.github.com/repos/${username}/${repo}/contents${path}`, {
+    return fetch(`https://api.github.com/repos/${username}/${repo}/contents${path}?ref=${ref}`, {
         headers: {
             Accept: "application/vnd.github.raw+json",
             Authorization: `Bearer ${token}`,

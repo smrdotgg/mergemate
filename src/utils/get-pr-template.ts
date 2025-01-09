@@ -33,7 +33,7 @@ function checkFileContents(
 ) {
   console.log(`fetchgin :::  https://api.github.com/repos/${username}/${repo}/contents${path}?ref=${ref}`)
   return fetch(
-    `https://api.github.com/repos/${username}/${repo}/contents${path}`,
+    `https://api.github.com/repos/${username}/${repo}/contents${path}?ref=${ref}`,
     {
       headers: {
         Accept: "application/vnd.github.raw+json",
