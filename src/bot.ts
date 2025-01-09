@@ -27,6 +27,7 @@ async function run() {
       owner,
       repo,
       ref,
+
     });
 
 
@@ -42,7 +43,7 @@ async function run() {
     }
 
     // Get the pull request template
-    const prBody = await getPullRequestTemplate(octokit as any, owner, repo);
+    const prBody = await getPullRequestTemplate(octokit as any, owner, repo, githubToken);
 
     // Create a pull request
     const pr = await octokit.rest.pulls.create({
