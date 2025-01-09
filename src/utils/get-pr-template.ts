@@ -43,7 +43,7 @@ function checkFileContents(
       if (!response.ok) {
         return null;
       }
-      return JSON.stringify(response.json());
+      return response.text();
     })
     .catch((error) => {
       console.error("Error:", error);
